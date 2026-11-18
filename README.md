@@ -106,3 +106,7 @@ requires.
 | `src/win.zig`, `src/win.h` | translated Win32 headers |
 | `src/autostart.zig` | HKCU Run key |
 | `src/png.zig` | PNG writer for `--dump` |
+
+## License
+
+MIT. See [LICENSE](LICENSE).
