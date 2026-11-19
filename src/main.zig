@@ -112,10 +112,11 @@ pub fn main(init: std.process.Init.Minimal) !void {
         return;
     };
 
-    log.write("showing band", .{});
+    log.write("showing band (boot={})", .{a.boot});
     try overlay.show(gpa, &forecast, .{
         .hold = a.hold,
         .dismiss_ms = a.dismiss_ms,
+        .failsafe_ms = if (a.boot) 0 else overlay.default_failsafe_ms,
         .fade_out_ms = cfg.fade_out_ms,
     });
     log.write("done", .{});

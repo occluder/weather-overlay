@@ -28,13 +28,16 @@ console build, which is easier to debug.
 .\zig-out\bin\weather-overlay.exe
 .\zig-out\bin\weather-overlay.exe --mock
 .\zig-out\bin\weather-overlay.exe --hold
+.\zig-out\bin\weather-overlay.exe --boot
 .\zig-out\bin\weather-overlay.exe --dump out.png --bg photo
 ```
 
 `--mock` skips the network. `--hold` leaves the dismiss hook out, so the window
-stays until the process is killed. `--dump` writes the band to a PNG instead of
-showing it; `--bg` picks the backdrop it is composited over (`dark`, `bright` or
-`photo`).
+stays until the process is killed. `--boot` is what the Run entry passes: same
+band, but without the 90 s failsafe, so it is still on screen however long you
+were away and closes on the first click. `--dump` writes the band to a PNG
+instead of showing it; `--bg` picks the backdrop it is composited over (`dark`,
+`bright` or `photo`).
 
 ## Configuration
 
@@ -72,6 +75,8 @@ Windows coalesces the timer.
 
 `--install` copies the binary into `%LOCALAPPDATA%\weather-overlay\` and points
 an HKCU Run entry at the copy, so rebuilding cannot change what starts at logon.
+The entry passes `--boot`, so the logon band has no failsafe timeout and waits
+for a click instead of fading out after 90 s.
 
 ## Log
 

@@ -12,9 +12,13 @@ const timer_tick: c.UINT_PTR = 1;
 const timer_arm: c.UINT_PTR = 2;
 const timer_failsafe: c.UINT_PTR = 3;
 
+pub const default_failsafe_ms: u32 = 90_000;
+
 pub const Options = struct {
     hold: bool = false,
-    failsafe_ms: u32 = 90_000,
+    /// Timeout for a band nobody clicks. 0 leaves it up until a click, which is
+    /// what the logon start wants: the user may be away for a while.
+    failsafe_ms: u32 = default_failsafe_ms,
     fade_in_ms: u32 = 200,
     fade_out_ms: u32 = 450,
     /// Debug: dismiss this long after showing, without needing a click.
@@ -123,7 +127,11 @@ pub fn show(gpa: std.mem.Allocator, f: *const model.Forecast, opts: Options) !vo
     _ = c.SetTimer(hwnd, timer_tick, 16, null);
     if (!opts.hold) {
         const delay = if (opts.dismiss_ms > 0) opts.dismiss_ms else opts.failsafe_ms;
-        _ = c.SetTimer(hwnd, timer_failsafe, delay, null);
+        if (delay > 0) {
+            _ = c.SetTimer(hwnd, timer_failsafe, delay, null);
+        } else {
+            log.write("no failsafe, waiting for a click", .{});
+        }
     }
 
     var msg: c.MSG = std.mem.zeroes(c.MSG);
